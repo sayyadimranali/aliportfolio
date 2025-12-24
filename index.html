@@ -1,111 +1,300 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creative Portfolio | 3D Experience</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="description" content="Animated DevOps Engineer Portfolio — Projects, Blog, and Contact." />
+  <title>DevOps Engineer Portfolio</title>
+
+  <!-- Preload critical CSS for snappy render -->
+  <link rel="preload" href="styles.css" as="style" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
+  <!-- Top progress bar (scroll indicator) -->
+  <div class="scroll-progress" aria-hidden="true">
+    <div class="scroll-progress__bar" id="scrollProgressBar"></div>
+  </div>
 
-    <div id="loader">
-        <div class="loader-content">
-            <div class="spinner"></div>
-            <p>Initializing Experience...</p>
-        </div>
-    </div>
+  <header class="header" id="top">
+    <div class="container header__inner">
+      <a class="brand" href="#home" aria-label="Go to homepage">
+        <span class="brand__mark" aria-hidden="true">⛭</span>
+        <span class="brand__text">DevOps Portfolio</span>
+      </a>
 
-    <div class="cursor"></div>
+      <nav class="nav" aria-label="Primary navigation">
+        <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navMenu">
+          <span class="nav__toggleLines" aria-hidden="true"></span>
+          <span class="sr-only">Open menu</span>
+        </button>
 
-    <nav class="navbar">
-        <div class="logo">PORTFOLIO<span>.</span></div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#projects">Work</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
+        <ul class="nav__menu" id="navMenu">
+          <li><a class="nav__link" data-route href="#home">Home</a></li>
+          <li><a class="nav__link" data-route href="#projects">Projects</a></li>
+          <li><a class="nav__link" data-route href="#blog">Blog</a></li>
+          <li><a class="nav__link" data-route href="#about">About</a></li>
+          <li><a class="nav__link nav__cta" data-route href="#contact">Contact</a></li>
+          <li class="nav__meta">
+            <button class="pill" id="motionToggle" type="button" title="Toggle motion (local only)">
+              Motion: <span id="motionState">Auto</span>
+            </button>
+          </li>
         </ul>
-        <div class="hamburger">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-        </div>
-    </nav>
+      </nav>
+    </div>
+  </header>
 
-    <section id="home" class="hero">
-        <canvas id="hero-canvas"></canvas>
-        <div class="hero-text">
-            <h1 class="reveal-text">Building Digital <span>Realms</span>.</h1>
-            <p>Full-Stack Developer & 3D Interaction Designer</p>
-            <a href="#projects" class="btn">View My Work</a>
+  <!-- Page transition overlay (used for section transitions + blog post transitions) -->
+  <div class="page-wipe" id="pageWipe" aria-hidden="true"></div>
+
+  <main id="app" class="app" tabindex="-1">
+    <!-- HOME -->
+    <section id="home" class="section section--hero" data-page>
+      <div class="container hero">
+        <div class="hero__content reveal">
+          <p class="kicker">DevOps Engineer • Cloud • Automation • Reliability</p>
+          <h1 class="hero__title">
+            Build <span class="accent">fast</span>, ship <span class="accent">safely</span>, scale <span class="accent">reliably</span>.
+          </h1>
+          <p class="hero__subtitle">
+            I design CI/CD pipelines, Infrastructure as Code, Kubernetes platforms, and observability systems
+            that reduce lead time, improve resilience, and keep teams shipping confidently.
+          </p>
+
+          <div class="hero__actions">
+            <a class="btn btn--primary" data-route href="#projects">
+              View Projects
+              <span class="btn__icon" aria-hidden="true">→</span>
+            </a>
+            <a class="btn btn--ghost" data-route href="#contact">Contact</a>
+          </div>
+
+          <div class="hero__badges">
+            <span class="badge">CI/CD</span>
+            <span class="badge">Terraform</span>
+            <span class="badge">Kubernetes</span>
+            <span class="badge">GitOps</span>
+            <span class="badge">SRE</span>
+            <span class="badge">Observability</span>
+          </div>
         </div>
+
+        <div class="hero__visual reveal">
+          <!-- Lightweight “terminal” mock, animated via CSS -->
+          <div class="terminal" role="img" aria-label="Animated terminal illustration">
+            <div class="terminal__bar">
+              <span class="dot dot--red"></span>
+              <span class="dot dot--yellow"></span>
+              <span class="dot dot--green"></span>
+              <span class="terminal__title">deploy@pipeline</span>
+            </div>
+            <div class="terminal__body">
+              <pre class="terminal__text" id="typeLine">
+$ git push origin main
+✔ build: passed (2m 11s)
+✔ test: passed (1m 04s)
+✔ scan: no critical findings
+→ deploy: staging
+→ canary: 10%
+→ promote: production
+✔ uptime: 99.95%
+              </pre>
+              <div class="terminal__glow" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container hero__stats reveal">
+        <div class="stat">
+          <div class="stat__num">↓ 62%</div>
+          <div class="stat__label">deployment time</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">↑ 4×</div>
+          <div class="stat__label">release frequency</div>
+        </div>
+        <div class="stat">
+          <div class="stat__num">↓ 38%</div>
+          <div class="stat__label">mean time to recover</div>
+        </div>
+      </div>
     </section>
 
-    <section id="projects" class="section">
-        <h2 class="section-title">Selected Projects</h2>
-        <div class="filter-buttons">
-            <button class="filter-btn active" data-filter="all">All</button>
-            <button class="filter-btn" data-filter="web">Web App</button>
-            <button class="filter-btn" data-filter="design">Design</button>
+    <!-- PROJECTS -->
+    <section id="projects" class="section" data-page>
+      <div class="container">
+        <header class="section__header reveal">
+          <h2 class="section__title">Projects</h2>
+          <p class="section__subtitle">
+            Real-world DevOps implementations: CI/CD, IaC, Kubernetes, and monitoring — with measurable outcomes.
+          </p>
+        </header>
+
+        <div class="filters reveal">
+          <button class="chip is-active" data-filter="all" type="button">All</button>
+          <button class="chip" data-filter="cicd" type="button">CI/CD</button>
+          <button class="chip" data-filter="iac" type="button">Infrastructure as Code</button>
+          <button class="chip" data-filter="k8s" type="button">Kubernetes</button>
+          <button class="chip" data-filter="obs" type="button">Monitoring</button>
+
+          <div class="filters__spacer"></div>
+
+          <label class="search" aria-label="Search projects">
+            <span class="sr-only">Search projects</span>
+            <input id="projectSearch" type="search" placeholder="Search projects…" autocomplete="off" />
+          </label>
         </div>
 
-        <div class="project-grid">
-            <div class="project-card" data-category="web">
-                <div class="project-img" style="background: #333;"></div>
-                <div class="project-info">
-                    <h3>Nexus Dashboard</h3>
-                    <p>Real-time data visualization platform.</p>
-                    <button class="open-modal">Explore</button>
-                </div>
-            </div>
-            </div>
+        <div id="projectGrid" class="grid reveal" aria-live="polite"></div>
+      </div>
     </section>
 
-    <section id="skills" class="section bg-light">
-        <h2 class="section-title">Tech Proficiency</h2>
-        <div class="skills-container">
-            <div class="skill-item">
-                <div class="skill-header">
-                    <span>JavaScript / WebGL</span>
-                    <span>95%</span>
-                </div>
-                <div class="progress-bar"><div class="progress" style="width: 0%" data-done="95%"></div></div>
-            </div>
-            </div>
+    <!-- BLOG -->
+    <section id="blog" class="section" data-page>
+      <div class="container">
+        <header class="section__header reveal">
+          <h2 class="section__title">Blog</h2>
+          <p class="section__subtitle">
+            Practical DevOps writing: design decisions, trade-offs, and lessons from building reliable delivery systems.
+          </p>
+        </header>
+
+        <!-- Blog router view: list OR single post -->
+        <div id="blogView" class="blog reveal"></div>
+      </div>
     </section>
 
-    <section id="about" class="section">
-        <div class="about-content">
-            <div class="about-text">
-                <h2>The Journey</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <span class="year">2024</span>
-                        <p>Senior Developer at TechGlobal - Leading 3D Web Initiatives.</p>
-                    </div>
-                </div>
+    <!-- ABOUT -->
+    <section id="about" class="section" data-page>
+      <div class="container">
+        <header class="section__header reveal">
+          <h2 class="section__title">About</h2>
+          <p class="section__subtitle">
+            How I work, what I optimize for, and the systems mindset behind my DevOps approach.
+          </p>
+        </header>
+
+        <div class="about reveal">
+          <div class="card">
+            <h3>Engineering philosophy</h3>
+            <ul class="list">
+              <li><strong>Automate the boring:</strong> everything repeatable becomes a pipeline or a module.</li>
+              <li><strong>Optimize for feedback:</strong> faster feedback loops beat heroics and late-night debugging.</li>
+              <li><strong>Reliability is a feature:</strong> error budgets, SLOs, and observability are non-negotiable.</li>
+              <li><strong>Security is continuous:</strong> shift-left scanning plus runtime guardrails.</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h3>Skills snapshot</h3>
+            <div class="skill-grid">
+              <div class="skill"><span>CI/CD</span><small>GitHub Actions, GitLab CI, Jenkins</small></div>
+              <div class="skill"><span>IaC</span><small>Terraform, Helm, Ansible</small></div>
+              <div class="skill"><span>Containers</span><small>Docker, Kubernetes, Argo CD</small></div>
+              <div class="skill"><span>Cloud</span><small>AWS, Azure, GCP (core services)</small></div>
+              <div class="skill"><span>Observability</span><small>Prometheus, Grafana, Loki, OpenTelemetry</small></div>
+              <div class="skill"><span>Security</span><small>SAST, IaC scanning, least privilege</small></div>
             </div>
+          </div>
         </div>
+      </div>
     </section>
 
-    <section id="contact" class="section">
-        <div class="contact-container">
-            <form id="contact-form">
-                <input type="text" placeholder="Name" required>
-                <input type="email" placeholder="Email" required>
-                <textarea placeholder="Your Message" rows="5"></textarea>
-                <button type="submit" class="btn">Send Message</button>
-            </form>
-            <div id="map">
-                <div class="map-placeholder">Based in San Francisco, CA</div>
+    <!-- CONTACT -->
+    <section id="contact" class="section" data-page>
+      <div class="container">
+        <header class="section__header reveal">
+          <h2 class="section__title">Contact</h2>
+          <p class="section__subtitle">
+            Want to discuss a role, contract, or a platform reliability challenge? Send a message.
+          </p>
+        </header>
+
+        <div class="contact reveal">
+          <form id="contactForm" class="card form" novalidate>
+            <div class="form__row">
+              <label class="field">
+                <span>Name</span>
+                <input name="name" id="name" type="text" placeholder="Your name" required minlength="2" />
+                <small class="field__error" data-error-for="name"></small>
+              </label>
+
+              <label class="field">
+                <span>Email</span>
+                <input name="email" id="email" type="email" placeholder="you@example.com" required />
+                <small class="field__error" data-error-for="email"></small>
+              </label>
             </div>
-        </div>
-    </section>
 
-    <script src="script.js"></script>
+            <label class="field">
+              <span>Subject</span>
+              <input name="subject" id="subject" type="text" placeholder="Opportunity / question" required minlength="3" />
+              <small class="field__error" data-error-for="subject"></small>
+            </label>
+
+            <label class="field">
+              <span>Message</span>
+              <textarea name="message" id="message" rows="6" placeholder="Tell me what you’re looking for…" required minlength="10"></textarea>
+              <small class="field__error" data-error-for="message"></small>
+            </label>
+
+            <div class="form__actions">
+              <button class="btn btn--primary" type="submit">
+                Send Message
+                <span class="btn__icon" aria-hidden="true">✦</span>
+              </button>
+              <p class="form__hint">
+                No backend used. This opens your email client via <code>mailto:</code>.
+                <br />
+                (Optional: deploy with Netlify Forms / Formspree later for direct submissions.)
+              </p>
+            </div>
+
+            <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+          </form>
+
+          <aside class="card contact__side">
+            <h3>Quick links</h3>
+            <div class="quick">
+              <a class="quick__link" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+              <a class="quick__link" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+              <a class="quick__link" href="#" onclick="return false;" title="Replace with your resume URL">Resume (PDF)</a>
+            </div>
+
+            <hr class="divider" />
+
+            <h3>What I can help with</h3>
+            <ul class="list">
+              <li>Pipeline modernization (build/test/security/deploy)</li>
+              <li>Kubernetes platform + GitOps adoption</li>
+              <li>Terraform modules + cloud landing zones</li>
+              <li>Observability + SLOs + incident readiness</li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Project modal -->
+  <div class="modal" id="projectModal" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Project details">
+    <div class="modal__overlay" data-close-modal></div>
+    <div class="modal__panel" role="document">
+      <button class="modal__close" type="button" data-close-modal aria-label="Close">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer__inner">
+      <p>© <span id="year"></span> DevOps Engineer • Built with HTML/CSS/JS • Performance-friendly animations</p>
+      <a class="top" data-route href="#home">Back to top ↑</a>
+    </div>
+  </footer>
+
+  <script defer src="app.js"></script>
 </body>
 </html>
